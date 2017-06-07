@@ -13,9 +13,11 @@ class ListaNegociacoes {
 
 	}
 
+	
 	get negociacoes() { 
 
-		return this._negociacoes;
+		//garante que uma nova instância é passada como retorno
+		return [].concat(this._negociacoes);
 
 	}
 } 

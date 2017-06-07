@@ -18,6 +18,7 @@ class DateHelper {
 	
 	static dateToText(date){
 
+		//Uso de template - Interpolação de Strings
 		return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
 
 

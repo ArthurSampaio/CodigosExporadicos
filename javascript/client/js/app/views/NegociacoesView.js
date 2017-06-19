@@ -41,7 +41,7 @@ class NegociacoesView {
             <td colspan="3"></td>
             <td>${
                   model.negociacoes.reduce((acc, n ) =>{
-                    acc + n.volume;
+                    return  acc + n.volume;
                 },0.0)
                     
             }</td>

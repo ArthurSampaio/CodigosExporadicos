@@ -1,20 +1,59 @@
 <section>
-  
+
+
   <article>
-    
+    <h3>Class e Style Binding</h3>
+    <div>
+      Selecione uma classe:
+      <select #classe (change)="0">
+        <option value="alert-success">Sucesso</option>
+        <option value="alert-info">Info</option>
+        <option value="alert-warning">Warning</option>
+        <option value="alert-danger">danger</option>
+
+      </select>
+      <br><br>
+
+      <div class="alert {{ classe.value }}" role="alert">
+        Texto colorido conforme valor do combobox
+
+      </div>
+
+      <div class="alert" role="alert" [class.alert-success]="classe.value == 'alert-success'">Sucesso</div>
+      <div class="alert" role="alert" [class.alert-info]="classe.value == 'alert-info'">Info</div>
+      <div class="alert" role="alert" [class.alert-warning]="classe.value == 'alert-warning'">Warning</div>
+
+      <div class="alert" role="alert" [class.alert-danger]="classe.value == 'alert-danger'">Danger</div>
+
+      <div class="alert alert-danger" role="alert" 
+      [style.display]="classe.valeu == 'alert-danger' ? 'block' : 'none' ">
+        Sangue no zoi mô vei. 
+      </div>
+
+    </div>
+  </article>
+
+
+  <article>
+
     <h3>Interpolation</h3>
-    <p>String render  with interpolation: {{ url }} </p>
+    <p>String render with interpolation: {{ url }} </p>
     <p>The outcome of 1 + 1 is: {{ 1 + 1}} </p>
     <p> The outcome of 1 + 1 isnt: {{ 1 + 1 + getValor() }} </p>
     <p> AngulaCurso e gosto do curso : {{ cursoAngular && getCurtirCurso() }} </p>
 
   </article>
-  
+
   <article>
     <h3>Property Binding</h3>
     <!--explict use of property binding-->
-    <img [src]="urlImagem" >
-    
+    <img [src]="urlImagem">
+
   </article>
+
+  <br><br>
+
+
+
 
 </section>

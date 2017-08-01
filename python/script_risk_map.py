@@ -3,23 +3,32 @@ import csv
 
 PESSOAL = "PESSOAL"
 JURIDICO = "JURIDICO"
+PRODUTO = "PRODUTO"
 EMPTY_STRING = ""
 
 # RISCO, SEMANA, PROB
 
-def define_classification (risk_week):
-	if(risk_week[0] == PESSOAL):	
-		risk = "PE" + "-" + risk_week[1]
-	elif (risk_week[0] == JURIDICO):
-		risk = "JU" + "-" + risk_week[1]
+def define_risck_name (risk_week):
+	
+	risk_week = risk_week.split()
+	
+	category = risk_week[0].split("-")
+	if(category[0] == PESSOAL):	
+		risk = "PE" + "-" + category[1]
+	elif (category[0] == JURIDICO):
+		risk = "JU" + "-" + category[1]
+	elif (category[0] == PRODUTO):
+		risk = "PR" + "-" + category[1]
 	else:
-		risk = "TEC" + "-" + risk_week[1]
+		risk = "TEC" + "-" + category[1]
 
 	return risk
 
 def get_array_of_probability (risk_week):
 	
 	probs = []
+	risk_week = risk_week.split()
+	
 
 	for i in range(1,len(risk_week)):
 		probs.append(float(risk_week[i]))
@@ -37,33 +46,52 @@ def make_array_of_week_probs (file):
 
 	return out
 
+def define_category(risk_week):
+	risk_week = risk_week.split()
+	category = risk_week[0].split("-")
+	return category[0]
+
+
 
 def main():
 
 	data = open("risco", "r+")
 
-	line_file = data.readline()
+	data = make_array_of_week_probs(data)
+	print(data)
 
-	while(line_file != EMPTY_STRING):
+	with open('riscos_mapeados.csv', 'w') as csvfile: 
+		header = ['risco', 'semana', 'probabilidade', 'categoria']
+		writer = csv.DictWriter(csvfile, fieldnames=header)
+		writer.writeheader()
 
-
-	classificacao = data[0].split("-")
-
-	risco = define_classification(classificacao)
-	probs = get_array_of_probability(classificacao)
-
-
-
-	#criar array de probabilidade
-	probs = []
-
-	for i in range(1,len(data)):
-
-		probs.append(float(data[i]))
+		for i in range(1,len(data) + 1):
+			j = i - 1
+			risk = define_risck_name(data[j])
+			probs = get_array_of_probability(data[j])
+			category = define_category(data[j])
+			
+			for j in range(1,9):
+				writer.writerow({'risco':risk, 'semana':j, 'probabilidade':probs[j-1], 'categoria':category})
 
 
 
 
+
+
+
+# with open('names.csv', 'w') as csvfile:
+#     fieldnames = ['first_name', 'last_name']
+#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+#     writer.writeheader()
+#     writer.writerow({'first_name': 'Baked', 'last_name': 'Beans'})
+#     writer.writerow({'first_name': 'Lovely', 'last_name': 'Spam'})
+#     writer.writerow({'first_name': 'Wonderful', 'last_name': 'Spam'})
+	
+
+
+main()
 
 
 

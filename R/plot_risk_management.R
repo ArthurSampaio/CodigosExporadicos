@@ -6,9 +6,9 @@ riscos_mapeados <- read_csv("~/Documentos/CodigosExporadicos/python/riscos_mapea
 
 riscos_mapeados %>%
   ggplot(aes(x = semana, y = probabilidade)) + 
-  geom_line(aes(colour = risco)) + facet_wrap(~categoria) + theme_bw() +
+  geom_line(aes(linetype = risco, color = risco)) + facet_wrap(~categoria) + theme_bw() +
   labs(title = "Gerência de Risco por Categoria e Semana", 
-       x = "Semanas", y = "Probabilidade do risco acontecer") 
+       x = "Semanas", y = "Probabilidade do risco acontecer") + scale_fill_brewer()
 
 
 library(plotly)

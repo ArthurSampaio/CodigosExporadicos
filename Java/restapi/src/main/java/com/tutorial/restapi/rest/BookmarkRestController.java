@@ -15,6 +15,7 @@ import java.util.Collection;
 /**
  * Created by sampaio on 04/07/17.
  */
+
 @RestController
 @RequestMapping("/{userId}/bookmarks")
 class BookmarkRestController {
@@ -46,6 +47,7 @@ class BookmarkRestController {
                     Bookmark result = bookmarkRepository.save(new Bookmark(account,
                             input.uri, input.description));
 
+                    //header
                     URI location = ServletUriComponentsBuilder
                             .fromCurrentRequest().path("/{id}")
                             .buildAndExpand(result.getId()).toUri();

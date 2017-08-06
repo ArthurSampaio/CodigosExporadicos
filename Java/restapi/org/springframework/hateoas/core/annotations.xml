@@ -1,0 +1,5 @@
+<root>
+    <item name='org.springframework.hateoas.core.DummyInvocationUtils T methodOn(java.lang.Class&lt;T&gt;, java.lang.Object...)'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>

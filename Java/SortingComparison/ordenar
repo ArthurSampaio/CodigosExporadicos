@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+cd src/
+echo -en "Compilando classe principal \n"
+javac Main.java
+echo -en "Ordenando arrays com ${1} \n"
+java Main $1 ../${2} ../${3}
+echo -en "Arrays ordenados \n" 
+

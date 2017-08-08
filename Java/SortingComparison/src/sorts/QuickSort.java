@@ -5,9 +5,9 @@ import java.util.Random;
 /**
  * Quicksort is a sorting algorithm which, on average, makes O(n*log n) comparisons to sort
  * n items. In the worst case, it makes O(n^2) comparisons, though this behavior is
- * rare. Quicksort is often faster in practice than other algorithms. 
+ * rare. Quicksort is often faster in practice than other algorithms.
  * <p>
- * Family: Divide and conquer.<br> 
+ * Family: Divide and conquer.<br>
  * Space: In-place.<br>
  * Stable: False.<br>
  * <p>
@@ -36,7 +36,7 @@ public class QuickSort<T extends Comparable<T>> {
         if (pivotType == PIVOT_TYPE.MIDDLE) {
             pivot = unsorted.length/2;
         } else if (pivotType == PIVOT_TYPE.RANDOM) {
-            pivot = getRandom(unsorted.length);  
+            pivot = getRandom(unsorted.length);
         }
         sort(pivot, 0, unsorted.length - 1, unsorted);
         return unsorted;

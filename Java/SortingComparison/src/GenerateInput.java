@@ -1,4 +1,3 @@
-package generateInput;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,13 +8,13 @@ import java.util.Random;
 /**
  * Created by sampaio on 06/08/17.
  */
-public class Generate {
+public class GenerateInput {
 
 
     private static final String RANDOM = "RANDOM";
     private static final String SORTED = "SORTED";
     private static final String REVERSE = "REVERSE";
-    private static final String FILE = "input.txt";
+    private static final String FILE = "../input.txt";
 
     public static void main(String[] args0) throws IOException {
         writeArraysInFile();

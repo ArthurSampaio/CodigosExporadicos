@@ -3,7 +3,7 @@ package sorts;
 /**
  * Merge sort is an O(n log n) comparison-based sorting algorithm. Most
  * implementations produce a stable sort, which means that the implementation
- * preserves the input order of equal elements in the sorted output. 
+ * preserves the input order of equal elements in the sorted output.
  * <p>
  * Family: Merging.<br>
  * Space: In-place.<br>

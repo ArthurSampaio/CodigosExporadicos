@@ -17,7 +17,7 @@ public class Main {
     private static final String QUICK = "QUICK";
     private static final String DIVISOR = ";";
 
-    private static final String HEADER = "algorithm; array_time; size; time";
+    private static final String HEADER = "algorithm; array_type; size; time";
 
     public static void main(String[] args) {
 
@@ -27,7 +27,7 @@ public class Main {
 
         try{
 
-            String algorithm = args[0];
+            String algorithm = args[0].toUpperCase();
             InputStream fstream = new FileInputStream(args[1]);
             String fileOutput = args[2];
 

@@ -4,7 +4,7 @@ package sorts;
  * Heapsort is a comparison-based sorting algorithm to create a sorted array (or
  * list), and is part of the selection sort family. Although somewhat slower in
  * practice on most machines than a well-implemented quicksort, it has the
- * advantage of a more favorable worst-case O(n log n) runtime. 
+ * advantage of a more favorable worst-case O(n log n) runtime.
  * <p>
  * Family: Selection.<br>
  * Space: In-place.<br>
@@ -51,18 +51,18 @@ public class HeapSort<T extends Comparable<T>> {
                         swap(left, i, unsorted);
                         i = left;
                         continue;
-                    } 
+                    }
                     // (left > i)
                     swap(right, i, unsorted);
                     i = right;
                     continue;
-                } 
+                }
                 // (i > left)
                 if (rightElement.compareTo(ithElement) > 0) {
                     swap(right, i, unsorted);
                     i = right;
                     continue;
-                } 
+                }
                 // (n > left) & (n > right)
                 break;
             }

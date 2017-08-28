@@ -26,10 +26,10 @@ ExperimentFactorial <- function(heap, merge, quick) {
   
 
   
-  plan <- FrF2(nfactors = 3, nruns = 2^3, replications = 10, repeat.only = TRUE, 
+  plan <- FrF2(nfactors = 3, nruns = 2^3, replications = 25, repeat.only = TRUE, 
                randomize = TRUE, factor.names = list(Algorithm = c(first.algorithm, second.algorithm),
                                                      size = c("Low", "High"),
-                                                     type = c(RANDOM, REVERSE)))
+                                                     array = c(RANDOM, REVERSE)))
   
   response.times <- do.call(rbind.data.frame, apply(plan, 1, FindRow, sort1 = quick, sort2 = merge))
 
@@ -38,6 +38,62 @@ ExperimentFactorial <- function(heap, merge, quick) {
   
 }
 
+GenerateGraphs <- function(plan.actual) {
+  
+  directory.name = "/SortingAlgorithmsMC/img-2kr"
+  createDirectoryImg(directory.name)
+  
+  path = paste(getwd(), directory.name, sep="")
+  
+  #takes the name of the resource studied in the design 
+  resource.name <- names(plan.actual)[4]
+  
+  # 1. Main effects of plot
+  png(file=paste(path,"/ME",resource.name, ".png", sep=""))
+  MEPlot(plan.actual, abbrev = 5, cex.xax = 1.6, cex.min = 2)
+  dev.off()
+  print("Main effects")
+  
+  
+  # 2. Interaction plots
+  png(file=paste(path, "/Iplot", resource.name, ".png", sep=""))
+  IAPlot(plan.actual, abbrev = 5, cex.xax = 1.6, cex.min = 2, lwd=2, show.alias = TRUE)
+  dev.off()
+  print("Interaction Plots")
+  
+  
+  # 3. Linear Model
+  
+  residuals = summary(lm(data = plan.actual, time ~ (Algorithm + size + array)^2))$residuals
+  
+  png(file=paste(path, "/LinearModel", resource.name, ".png", sep=""))
+  qqnorm(a$residuals)
+  qqline(a$residuals)
+  dev.off()
+  print("Interaction Plots")
+  
+  
+  # 4. Half Normal
+  
+  plan.sd <- aggregate(reptowide(plan.actual), FUN="sd")
+  png(file=paste(path, "/HN", resource.name, ".png", sep=""))
+  DanielPlot(plan.sd, half=TRUE, alpha = 0.1, cex.main = 1.8, cex.legend = 1.2)
+  dev.off()
+  
+  
+}
+
+createDirectoryImg = function(folder.name) {
+  
+  if(!(dir.exists(file.path(path, folder.name)))){
+    dir.create(file.path(path, folder.name))
+    paste("Directory created")
+    
+  }else{
+    paste("Directory already exists")
+  }
+  
+}
 
 FindRow <- function(line, sort1, sort2 ) {
   

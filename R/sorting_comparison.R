@@ -26,14 +26,15 @@ ExperimentFactorial <- function(heap, merge, quick) {
   
 
   
-  plan <- FrF2(nfactors = 3, nruns = 2^3, replications = 50, repeat.only = TRUE, 
+  plan <- FrF2(nfactors = 3, nruns = 2^3, replications = 10, repeat.only = TRUE, 
                randomize = TRUE, factor.names = list(Algorithm = c(first.algorithm, second.algorithm),
                                                      size = c("Low", "High"),
-                                                     type = c("REVERSE", "RANDOM")))
+                                                     type = c(RANDOM, REVERSE)))
   
   response.times <- do.call(rbind.data.frame, apply(plan, 1, FindRow, sort1 = quick, sort2 = merge))
 
-  plan.actual <- add.response(design = plan, response = response.times[4])
+  time = response.times[4]
+  plan.actual <- add.response(design = plan, response = time)
   
 }
 

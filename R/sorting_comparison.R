@@ -27,7 +27,7 @@ ExperimentFactorial <- function(heap, merge, quick) {
 
   
   plan <- FrF2(nfactors = 3, nruns = 2^3, replications = 25, repeat.only = TRUE, 
-               randomize = TRUE, factor.names = list(Algorithm = c(first.algorithm, second.algorithm),
+               randomize = TRUE, factor.names = list(Algorithm = c(second.algorithm,first.algorithm),
                                                      size = c("Low", "High"),
                                                      array = c(RANDOM, REVERSE)))
   
@@ -40,10 +40,11 @@ ExperimentFactorial <- function(heap, merge, quick) {
 
 GenerateGraphs <- function(plan.actual) {
   
-  directory.name = "/SortingAlgorithmsMC/img-2kr"
-  createDirectoryImg(directory.name)
+  directory.name = "/SortingAlgorithmsMC/img-2krHeap"
   
   path = paste(getwd(), directory.name, sep="")
+  createDirectoryImg(directory.name)
+
   
   #takes the name of the resource studied in the design 
   resource.name <- names(plan.actual)[4]

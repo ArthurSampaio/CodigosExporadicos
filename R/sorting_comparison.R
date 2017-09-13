@@ -26,21 +26,29 @@ ExperimentFactorial <- function(heap, merge, quick) {
   
 
   
-  plan <- FrF2(nfactors = 3, nruns = 2^3, replications = 25, repeat.only = TRUE, 
-               randomize = TRUE, factor.names = list(Algorithm = c(second.algorithm,first.algorithm),
+  plan <- FrF2(nfactors = 3, nruns = 2^3, replications = 50, repeat.only = TRUE, 
+               randomize = TRUE, factor.names = list(Algorithm = c(first.algorithm, second.algorithm),
                                                      size = c("Low", "High"),
                                                      array = c(RANDOM, REVERSE)))
   
+  plan.reduzido <- FrF2(nfactors = 2, nruns = 2^2, replications = 25, repeat.only = TRUE, 
+                        randomize = TRUE, factor.names = list(Algorithm = c(first.algorithm, second.algorithm),
+                                                              size = c("Low", "High")
+                                                            ))
+  
   response.times <- do.call(rbind.data.frame, apply(plan, 1, FindRow, sort1 = quick, sort2 = merge))
 
+  response.reduzido <- do.call(rbind.data.frame, apply(plan.reduzido, 1, FindRow, sort1 = quick, sort2 = merge))
+  
   time = response.times[4]
+  time.reduzido = response.reduzido[4]
   plan.actual <- add.response(design = plan, response = time)
   
 }
 
 GenerateGraphs <- function(plan.actual) {
   
-  directory.name = "/SortingAlgorithmsMC/img-2krHeap"
+  directory.name = "/SortingAlgorithmsMC/2k"
   
   path = paste(getwd(), directory.name, sep="")
   createDirectoryImg(directory.name)
@@ -116,17 +124,13 @@ FindRow <- function(line, sort1, sort2 ) {
 
   }else{
     if(line[2] == "High"){
-      if(line[3] == RANDOM){
-        row <- sort2 %>% filter(size_type >= 1 & array_type == RANDOM) %>% sample_n(1)
-      }else{ #REVERSE
-        row <- sort2 %>% filter(size_type >= 1 & array_type == REVERSE) %>% sample_n(1)
-      }
+     
+        row <- sort2 %>% filter(size_type >= 1) %>% sample_n(1)
+      
       
     }else{#LOW
-      if(line[3] == RANDOM){
-        row <- sort2 %>% filter(size_type < 1 & array_type == RANDOM) %>% sample_n(1)
-      }else{ #REVERSE
-        row <- sort2 %>% filter(size_type < 1 & array_type == REVERSE) %>% sample_n(1)
+      
+        row <- sort2 %>% filter(size_type < 1) %>% sample_n(1)
       }
     }
   }

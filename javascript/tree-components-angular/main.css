@@ -1,0 +1,28 @@
+html, body{
+    background-color: green;
+    margin-left: 50px;
+}
+
+hero-list b{
+    background-color: yellow;
+    color: blueviolet;
+        margin-left: 50px;
+
+}
+
+.test{
+    background-color: red;
+    margin-left: 50px;
+
+}
+
+hero-detail {
+    color:green;
+    
+}
+
+.test1 {
+    color:green; 
+    background: green; 
+    margin: 40px; 
+}

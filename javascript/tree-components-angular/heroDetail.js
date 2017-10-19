@@ -13,7 +13,11 @@ function HeroDetailController() {
 }
 
 angular.module('heroApp').component('heroDetail', {
-  templateUrl: 'heroDetail.html',
+  templateUrl: ['$element',function($element){
+    angular.element($element).addClass('.test');
+    return 'heroDetail.html'
+  }],
+
   controller: HeroDetailController,
   bindings: {
     hero: '<',

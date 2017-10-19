@@ -1,0 +1,201 @@
+---
+title: "Quem foi eleito?"
+author: 'Por [Arthur Sampaio](https://www.linkedin.com/in/arthursampaiopcorreia)'
+date: "Outubro de 2016"
+output: 
+  html_document:
+    theme: journal
+    highlight: textmate
+    fig_height: 5
+    fig_width: 8
+    toc: yes
+    toc_float: yes
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+source("partidos_unicos.R")
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+  library(ggplot2)
+  library(dplyr)
+  library(ggfortify)
+  library(dplyr)
+  library(cluster)
+  library(plotly)
+  require(GGally)
+  library(ggdendro)
+  library(knitr)
+  library(resample)
+  library(tidyr)
+  library(modelr) 
+  library(broom)
+  require(ISLR)
+  theme_set(theme_bw())
+```
+
+## Festa da democracia?
+
+Vivemos numa democracia representativa, onde o exercício do poder político da população não é direta, mas através de representantes legítimos da soberania popular. Tais representantes são escolhidos através de eleições democráticas. Das grandes críticas a este sistema representativo, temos: 
+
+1. A criação de uma nova classe social: [Os políticos de Carreira](http://www.brasil247.com/pt/247/poder/48909/Corrup%C3%A7%C3%A3o-e-os-pol%C3%ADticos-de-carreira.htm). 
+
+2. O fato da população ser consultada apenas uma vez a cada quatro anos. 
+
+3. E não menos importante, após eleitos, estes representantes podem agir praticamente como bem querem, sem a necessidade da opinião pública. 
+
+No começo do mês de outubro passamos por mais uma ~~festa da democracia~~, também conhecida como eleição municipal, em todo o território brasileiro e escolhemos os nossos vereadores para atuarem na esfera municipal das nossas vidas. 
+
+__Contudo, será que os vereadores eleitos realmente representam a população? Quem são? Há representantes suficientes para as mulheres? E para os negros e indígenas? __ É isso que você verá nas próximas linhas, meu amigo. 
+
+### Os dados
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+
+dadosPB<- read.csv2("~/Documentos/QuemFoiEleito/data/dadosPB.csv")
+
+```
+
+Todos os dados encontrados aqui são referentes ao Estado da Paraíba e podem ser encontrados no próprio site do [Tribunal Superior Eleitoral](http://www.tse.jus.br/hotSites/pesquisas-eleitorais/). Todas as conversões necessárias dos arquivos originais foram feitas por mim e pode ser encontradas no meu [Github](https://github.com/ArthurSampaio/) ~~ou perdidas pela pasta de downloads~~ =x .
+
+## Quem se candidatou ao cargo de vereador? 
+
+Vamos observar algumas características quem se candidatou a vereador nos municipios paraibanos. 
+
+---Como assim, Arthur? 
+
+O objetivo aqui é simples, descobrir se os candidatos a vereadores de alguma maneira representam a população e responder algumas perguntas como: Os candidatos refletem o a nossa população? As mulheres, negros e demais minorias são representadas nas nossa câmaras municipais?
+
+Para começar vamos ver os partidos que mais colocaram candidatos na rua.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+partidosUnicos = partidos_unico()
+
+partidosUnicos = partidosUnicos %>% mutate(total = masc + fem)
+
+plot_ly(partidosUnicos, x = ~masc, y = ~fem, type = "scatter", color = ~part,size = ~total, sizes = c(10,50), text = ~paste("Partido: ", part, "<br>Homens: ", masc, "<br>Mulheres: ", fem, "<br>Total: ", total)) %>%
+  layout(title = "Quantidade de candidatos por partido e sexo",
+         xaxis = list(title = "Homens"), 
+         yaxis = list(title = "Mulheres"), 
+         showlegend = FALSE)
+
+
+```
+
+Um total de 10.859 paraibanos distribuidos em mais de 220 municípios pleiteram a candidatura para o cargo de vereador dos seus municípios. Na visualização acima é possível observar a distribuição dos candidatos a partir dos seus partidos. Os partidos que mais inscreveram candidatos foram o PSB, PMDB e o PSDB, respectivamente, juntos representam cerca de 31% de todos os candidatos a vereadores do nosso estado, tal fato é esperado, uma vez que o PSB é a situação no Governo do Estado e o PMDB e PSDB são os maiores partidos da nação.
+
+Com excessão do PMB, todos os outros partidos possuiram mais homens do que mulheres.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+cont_sex = count(dadosPB, sexo)
+
+quantidade = plot_ly(x = ~cont_sex$sexo, y = ~cont_sex$n, type = "bar", color = ~cont_sex$sexo, name = "Quantidade de pessoas por sexo") %>% layout(title = "Quantidade de pessoas por sexo", 
+                      xaxis = list(title = "Sexo"),
+                      yaxis = list(title = "Quantidade de pessoas"))
+
+
+idad = plot_ly(dadosPB, x = ~sexo, y = ~idade, color = ~sexo, type = "box")
+
+subplot(quantidade, idad) %>% 
+  layout(title = "Informações sobre os candidatos",
+         margin = list(l = 100, r = 20, t = 70, b = 70), 
+         showlegend = FALSE)
+
+```
+
+Acima é possível notar a quantidade de pessoas do sexo feminino e masculino, respectivamente. Além disto, no gráfico da direita é possível avaliar a distribuição das idades dos candidatos a vereadores a partir do seu sexo. Com excessão dos [outliers](https://pt.wikipedia.org/wiki/Outlier), ambos os sexos são parecidos em relação a este quesito, a média e a mediana giram em torno dos 42 anos. Porém, alguns fatos interessantes, são:
+
+* Há uma candidata com menos de 18, que é o caso da candidata _Fernanda Rodrigues de Lima_ no município de Belém.
+
+* No outro extremo, uma candidata com 90 anos, a senhora _Creusa Maria_ no município de Campina Grande. 
+
+Outro ponto interessante, é a concentração da participação de grupos étnicos nas candidaturas, como é possível ver abaixo no gráfico da esquerda. Ao lado é possível visualizar o grau de instrução dos nossos candidatos. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+etnia = count(dadosPB, cor)
+et = plot_ly(x = ~etnia$cor, y = ~etnia$n, color = ~etnia$cor, type = "bar")
+
+g_int = count(dadosPB, grau_inst)
+
+int = plot_ly(x = ~g_int$grau_inst, y = ~g_int$n, color = ~g_int$grau_inst, type = "bar")
+
+subplot(et, int) %>% 
+  layout(title = "Informações sobre os candidatos",
+         margin = list(l = 50, r = 50, t = 70, b = 70), 
+         showlegend = FALSE)
+
+```
+
+
+##Quem se elegeu?
+
+Após todo o período eleitoral, toda as variadas formas de poluição acrescidas aos jingles e papeis de candidatos,  __quem foi eleito?__
+
+Um total de 2203 vereadores foram eleitos nos 223 municípios paraíbanos. Contudo, infelizmente, o percentual de mulheres eleitas foi bem abaixo do esperado. Durante o período eleitoral as mulheres representavam, cerca de, 33% dos candidatos, após a conclusão das eleições apenas 13% dos nossos vereadores são mulheres. Tal fato, é um total __contraste__ com a nossa realidade, cerca de [52% da nossa população é composta por mulheres(dados de 2013)](http://www.paraiba.com.br/2013/11/29/46128-dados-do-ibge-pb-e-estado-com-maior-numero-de-mulheres-e-o-segundo-mais-urbanizado-do-nordeste), enquanto nas nossas câmaras municipais não representa minimamente a matemática da representação direta. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+eleitos = dadosPB %>% filter(status_eleitoral %in% c("ELEITO POR MÉDIA", "ELEITO POR QP", "ELEITO"))
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+sex = count(eleitos, sexo)
+
+
+gen_sex = plot_ly(x = ~sex$sexo, y = ~sex$n, color = ~sex$sexo, type ="bar")
+
+gen_idade = plot_ly(eleitos, x = ~sexo, y = ~idade, color = ~sexo, type = "box")
+
+subplot(gen_sex, gen_idade) %>% 
+  layout(title = "Informações sobre os candidatos eleitos",
+         margin = list(l = 100, r = 20, t = 70, b = 70), 
+         showlegend = FALSE)
+```
+
+Em relação a idade, ambos os sexos são bem parecidos em suas características. 
+
+Infelizmente, nada novo sob o sol. Os dados dos vereadores eleitos, no que diz respeito ao grau de instrução nao variou, ou seja, se manteu o mesmo para os candidatos. Os indígenas, negros e pessoas de pele amarela são as minorias etnicas dentro de nossas câmaras. 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+etnia = count(eleitos, cor)
+et = plot_ly(x = ~etnia$cor, y = ~etnia$n, color = ~etnia$cor, type = "bar")
+
+g_int = count(eleitos, grau_inst)
+
+int = plot_ly(x = ~g_int$grau_inst, y = ~g_int$n, color = ~g_int$grau_inst, type = "bar")
+
+subplot(et, int) %>% 
+  layout(title = "Informações sobre os vereadores eleitos",
+         yaxis = list(title= "Quantidade de vereadores"),
+         margin = list(l = 50, r = 50, t = 70, b = 70), 
+         showlegend = FALSE)
+
+```
+
+E aqui temos a relação da quantidade de vereadores eleitos por partido. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+a = ggplot(eleitos, mapping = aes(x = reorder(Partido,Partido, function(x) +  length(x)), fill = Partido)) + geom_bar() + coord_flip() + labs(title = "Quantidade de vereadores eleitos por partido", y = "Partidos", x = "Quantidade")
+(gg <- ggplotly(a)%>% layout(showlegend = FALSE))
+
+```
+
+
+
+###Algumas palavras
+
+Se você chegou até aqui, parabéns. Obrigado por me aguentar nessas simples linhas que escrevi. Meu objetivo com essa análise é trazer um pouco da nossa realidade da política paraibana para o entendimento de todos, com o menor grau possível de parcialidade. 
+
+Haverá outros textinhos como estes em breve. 
+
+Até lá. 
+
+
+
+

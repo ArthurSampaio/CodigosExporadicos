@@ -1,39 +1,44 @@
-(function(angular) {
+(function (angular) {
   'use strict';
-function HeroListController($scope, $element, $attrs) {
-  var ctrl = this;
+  function HeroListController($scope, $element, $attrs) {
+    var ctrl = this;
 
-  // This would be loaded by $http etc.
-  ctrl.list = [
-    {
-      name: 'Superman',
-      location: ''
-    },
-    {
-      name: 'Batman',
-      location: 'Wayne Manor'
-    },
-    { name: 'Picachu',
-      location: 'Pedregal'
-    }
-  ];
+    // This would be loaded by $http etc.
+    ctrl.list = [
+      {
+        name: 'Superman',
+        location: ''
+      },
+      {
+        name: 'Batman',
+        location: 'Wayne Manor'
+      },
+      {
+        name: 'Picachu',
+        location: 'Pedregal'
+      }
+    ];
 
-  ctrl.updateHero = function(hero, prop, value) {
-    hero[prop] = value;
-  };
+    ctrl.updateHero = function (hero, prop, value) {
+      hero[prop] = value;
+    };
 
-  ctrl.deleteHero = function(hero) {
-    var idx = ctrl.list.indexOf(hero);
-    if (idx >= 0) {
-      ctrl.list.splice(idx, 1);
-    }
-  };
-}
+    ctrl.deleteHero = function (hero) {
+      var idx = ctrl.list.indexOf(hero);
+      if (idx >= 0) {
+        ctrl.list.splice(idx, 1);
+      }
+    };
+  }
 
-angular.module('heroApp').component('heroList', {
-  templateUrl: 'heroList.html',
-  controller: HeroListController
-});
+  angular.module('heroApp').component('heroList', {
+    templateUrl: ['$element', function ($element) {
+      angular.element($element).addClass('test');
+      return 'heroList.html'
+    }],
+
+    controller: HeroListController
+  });
 })(window.angular);
 
 /*
